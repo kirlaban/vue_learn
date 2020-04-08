@@ -1,0 +1,76 @@
+
+body {
+    font-family: Tahoma;
+    font-size: 14px;
+}
+
+.course-content {
+    max-width: 1220px;
+    margin: 0 auto;
+}
+
+.course-title {
+    text-align: center;
+    color: #196067;
+    font-size: 16px;
+    font-weight: 600;
+    margin: 30px 0 0 0;
+}
+
+.course-content .el-table--enable-row-hover .el-table__body tr:hover > td {
+    background: #fff;
+}
+
+.course-body {
+    margin: 20px 0 0 0;
+}
+
+.students-item {
+    padding: 0 0 0 0;
+    display: flex;
+    height: 30px;
+    line-height: 30px;
+}
+
+.student-item {
+    margin: 0 7px 0 0;
+}
+
+.student-item.del {
+    cursor: pointer;
+    width: 25px;
+    text-align: center;
+    margin: 0 0 0 0;
+}
+
+.students-btns {
+    margin: 10px 0 0 0;
+}
+
+.students-btn {
+
+}
+
+.add-form .el-input__inner {
+    margin: 0 0 10px 0;
+}
+
+.add-form .el-input__inner:last-child {
+    margin: 0 0 0 0;
+}
+
+.add-form-btns {
+    margin: 20px 0 0 0;
+}
+
+
+
+
+
+
+
+
+
+
+
+
