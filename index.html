@@ -56,7 +56,7 @@
                             label="Список учащихся"
                             width="500">
                         <template slot-scope="scope">
-                            <div class="students-list" v-for="(item, index) in student">
+                            <div class="students-list" v-for="(item, index) in student" :key="item.id">
                                 <div class="students-item">
                                     <div class="student-item">{{ item.family }}</div>
                                     <div class="student-item">{{ item.name }}</div>
@@ -73,11 +73,11 @@
                                     <el-dialog :visible.sync="addBtn" title="Добавление учащегося">
                                         <div class="add-form">
                                             <input class="el-input__inner" placeholder="фамилия"
-                                                   v-model="this.newStudentFamily">
+                                                   v-model="newStudentFamily">
                                             <input class="el-input__inner" placeholder="имя"
-                                                   v-model="this.newStudentName">
+                                                   v-model="newStudentName">
                                             <input class="el-input__inner" placeholder="отчество"
-                                                   v-model="this.newStudentSurname">
+                                                   v-model="newStudentSurname">
 
                                             <div class="add-form-btns">
                                                 <el-button type="primary" @click="addNewStudent" size="mini">Добавить
@@ -149,6 +149,7 @@
                 const parsed = JSON.stringify(this.student);
                 localStorage.setItem('student', parsed);
                 this.addBtn = false;
+                this.resetFields();
             },
 
             deleteStudent(itemIndex) {
@@ -156,13 +157,22 @@
                 this.saveStudents();
             },
             addNewStudent() {
-                //console.log('test');
-                this.student.push({
-                    family: newStudentFamily,
-                    name: newStudentName,
-                    surname: newStudentSurname
-                });
-                this.saveStudents();
+                //console.log(this.newStudentFamily);
+                if(!this.newStudentFamily || !this.newStudentName || !this.newStudentSurname){
+                    this.$message('Одно из полей не заполнено');
+                } else {
+                    this.student.push({
+                        family: this.newStudentFamily,
+                        name: this.newStudentName,
+                        surname: this.newStudentSurname
+                    });
+                    this.saveStudents();
+                }
+            },
+            resetFields() {
+                this.newStudentFamily = '';
+                this.newStudentName = '';
+                this.newStudentSurname = '';
             },
         },
     })
