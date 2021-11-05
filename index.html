@@ -10,91 +10,7 @@
 
 <div id="app">
     <div class="course-content">
-        <div class="course-title">{{ title }}</div>
-
-        <div class="course-body">
-            <template>
-                <el-table
-                        :data="course"
-                        style="width: 100%">
-                    <el-table-column
-                            label="Тематика курса"
-                            width="150">
-                        <template slot-scope="scope">
-                            {{scope.row.theme}}
-                        </template>
-                    </el-table-column>
-                    <el-table-column
-                            label="Название курса"
-                            width="150">
-                        <template slot-scope="scope">
-                            {{scope.row.name}}
-                        </template>
-                    </el-table-column>
-                    <el-table-column
-                            label="Описание курса"
-                            width="150">
-                        <template slot-scope="scope">
-                            {{scope.row.description}}
-                        </template>
-                    </el-table-column>
-                    <el-table-column
-                            label="Дата старта"
-                            width="120">
-                        <template slot-scope="scope">
-                            {{scope.row.date}}
-                        </template>
-                    </el-table-column>
-                    <el-table-column
-                            label="Ссылка на видео"
-                            width="150">
-                        <template slot-scope="scope">
-                            <a href="/">{{scope.row.link}}</a>
-                        </template>
-                    </el-table-column>
-                    <el-table-column
-                            label="Список учащихся"
-                            width="500">
-                        <template slot-scope="scope">
-                            <div class="students-list" v-for="(item, index) in student" :key="item.id">
-                                <div class="students-item">
-                                    <div class="student-item">{{ item.family }}</div>
-                                    <div class="student-item">{{ item.name }}</div>
-                                    <div class="student-item">{{ item.surname }}</div>
-                                    <div class="student-item del">
-                                        <i class="el-icon-close" @click="deleteStudent(index)"></i>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="students-btns">
-                                <div class="students-btn">
-                                    <el-button type="primary" size="mini" @click="addBtn = true">Добавить</el-button>
-                                    <el-dialog :visible.sync="addBtn" title="Добавление учащегося">
-                                        <div class="add-form">
-                                            <input class="el-input__inner" placeholder="фамилия"
-                                                   v-model="newStudentFamily">
-                                            <input class="el-input__inner" placeholder="имя"
-                                                   v-model="newStudentName">
-                                            <input class="el-input__inner" placeholder="отчество"
-                                                   v-model="newStudentSurname">
-
-                                            <div class="add-form-btns">
-                                                <el-button type="primary" @click="addNewStudent" size="mini">Добавить
-                                                </el-button>
-                                                <el-button @click="addBtn = false" size="mini">Отмена</el-button>
-                                            </div>
-                                        </div>
-                                    </el-dialog>
-                                </div>
-
-                                <div class="students-btn"></div>
-                            </div>
-                        </template>
-                    </el-table-column>
-                </el-table>
-            </template>
-        </div>
+        <course-detail></course-detail>
     </div>
 
 
@@ -106,10 +22,72 @@
 <script src="https://unpkg.com/vue/dist/vue.js"></script>
 <!-- import JavaScript -->
 <script src="https://unpkg.com/element-ui/lib/index.js"></script>
+
 <script>
-    new Vue({
-        el: '#app',
-        data: function () {
+    Vue.component('course-detail', {
+        template: `
+            <div class="course-body">
+                <div class="course-title">{{ title }}</div>
+                <template>
+                    <el-table
+                            :data="course"
+                            style="width: 100%">
+                        <el-table-column
+                                label="Тематика курса"
+                                width="150">
+                            <template slot-scope="scope">
+                                {{scope.row.theme}}
+                            </template>
+                        </el-table-column>
+                        <el-table-column
+                                label="Название курса"
+                                width="150">
+                            <template slot-scope="scope">
+                                {{scope.row.name}}
+                            </template>
+                        </el-table-column>
+                        <el-table-column
+                                label="Описание курса"
+                                width="150">
+                            <template slot-scope="scope">
+                                {{scope.row.description}}
+                            </template>
+                        </el-table-column>
+                        <el-table-column
+                                label="Дата старта"
+                                width="120">
+                            <template slot-scope="scope">
+                                {{scope.row.date}}
+                            </template>
+                        </el-table-column>
+                        <el-table-column
+                                label="Ссылка на видео"
+                                width="150">
+                            <template slot-scope="scope">
+                                <a href="/">{{scope.row.link}}</a>
+                            </template>
+                        </el-table-column>
+                        <el-table-column
+                                label="Список учащихся"
+                                width="500">
+                            <template slot-scope="scope">
+                                <ul class="students-list">
+                                    <li class="students-item" v-for="(item, index) in student" :key="item.id">
+                                        <div class="student-item">{{ item.family }}</div>
+                                        <div class="student-item">{{ item.name }}</div>
+                                        <div class="student-item">{{ item.surname }}</div>
+                                        <el-button class="student-item del" icon="el-icon-close" circle size="mini" @click="deleteStudent(index)"></el-button>
+                                    </li>
+                                </ul>
+                                <add-students @add-student="addNewStudent"></add-students>
+
+                            </template>
+                        </el-table-column>
+                    </el-table>
+            </template>
+            </div>
+        `,
+        data() {
             return {
                 addBtn: false,
                 title: 'Карточка обучающего курса',
@@ -124,13 +102,10 @@
                 }],
 
                 student: [
-                    {family: "Иванов", name: "Иван", surname: "Иванович"},
-                    {family: "Петров", name: "Петр", surname: "Петрович"},
-                    {family: "Сидоров", name: "Сидор", surname: "Сидорович"},
+                    {id: 1, family: "Иванов", name: "Иван", surname: "Иванович"},
+                    {id: 2, family: "Петров", name: "Петр", surname: "Петрович"},
+                    {id: 3, family: "Сидоров", name: "Сидор", surname: "Сидорович"},
                 ],
-                newStudentName: null,
-                newStudentFamily: null,
-                newStudentSurname: null,
             }
         },
 
@@ -146,7 +121,9 @@
 
         methods: {
             saveStudents() {
+                //console.log(this.student);
                 const parsed = JSON.stringify(this.student);
+
                 localStorage.setItem('student', parsed);
                 this.addBtn = false;
                 this.resetFields();
@@ -156,15 +133,17 @@
                 this.student.splice(itemIndex, 1);
                 this.saveStudents();
             },
-            addNewStudent() {
-                //console.log(this.newStudentFamily);
-                if(!this.newStudentFamily || !this.newStudentName || !this.newStudentSurname){
+            addNewStudent(newStudentName, newStudentFamily, newStudentSurname) {
+
+                //console.log(newStudentFamily);
+                if (!newStudentFamily || !newStudentName || !newStudentSurname) {
                     this.$message('Одно из полей не заполнено');
                 } else {
                     this.student.push({
-                        family: this.newStudentFamily,
-                        name: this.newStudentName,
-                        surname: this.newStudentSurname
+                        id: Math.max(...this.student.map(user => user.id)) + 1,
+                        name: newStudentName,
+                        family: newStudentFamily,
+                        surname: newStudentSurname
                     });
                     this.saveStudents();
                 }
@@ -175,6 +154,60 @@
                 this.newStudentSurname = '';
             },
         },
-    })
+    });
+
+
+    Vue.component('add-students', {
+        template: `
+            <div class="students-btns">
+                <div class="students-btn">
+                    <el-button type="primary" size="mini" @click="addBtn = true">Добавить</el-button>
+                    <el-dialog :visible.sync="addBtn" title="Добавление учащегося">
+                        <div class="add-form">
+                            <input class="el-input__inner" placeholder="фамилия"
+                                   v-model="newStudentFamily">
+                            <input class="el-input__inner" placeholder="имя"
+                                   v-model="newStudentName">
+                            <input class="el-input__inner" placeholder="отчество"
+                                   v-model="newStudentSurname">
+
+                            <div class="add-form-btns">
+                                <el-button type="primary" @click="addStudent" size="mini">Добавить
+                                </el-button>
+                                <el-button @click="addBtn = false" size="mini">Отмена</el-button>
+                            </div>
+                        </div>
+                    </el-dialog>
+                </div>
+
+                <div class="students-btn"></div>
+            </div>
+        `,
+        data() {
+            return {
+                addBtn: false,
+
+                newStudentName: null,
+                newStudentFamily: null,
+                newStudentSurname: null,
+            }
+        },
+
+        mounted() {
+        },
+
+        methods: {
+            addStudent() {
+                //console.log(this.newStudentName);
+                this.$emit('add-student', this.newStudentName, this.newStudentFamily, this.newStudentSurname);
+                this.addBtn = false;
+            },
+        },
+    });
+
+
+    var app = new Vue({
+        el: '#app'
+    });
 </script>
 </html>

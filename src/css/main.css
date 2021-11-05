@@ -14,7 +14,7 @@ body {
     color: #196067;
     font-size: 16px;
     font-weight: 600;
-    margin: 30px 0 0 0;
+    margin: 20px 0 10px 0;
 }
 
 .course-content .el-table--enable-row-hover .el-table__body tr:hover > td {
@@ -38,9 +38,15 @@ body {
 
 .student-item.del {
     cursor: pointer;
-    width: 25px;
     text-align: center;
     margin: 0 0 0 0;
+    border: none;
+    position: relative;
+    top: 1px;
+}
+
+.student-item.del:hover {
+    background-color: transparent;
 }
 
 .students-btns {
