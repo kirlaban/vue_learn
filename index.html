@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html>
+
 <head>
     <meta charset="UTF-8">
 </head>
@@ -10,7 +11,7 @@
 
 <div id="app">
     <div class="course-content">
-        <course-detail></course-detail>
+        <course-table></course-table>
     </div>
 
 
@@ -25,81 +26,98 @@
 
 <script>
     Vue.component('course-detail', {
+        props: ['courseTitle', 'courseId'],
         template: `
-            <div class="course-body">
-                <div class="course-title">{{ title }}</div>
-                <template>
-                    <el-table
-                            :data="course"
-                            style="width: 100%">
-                        <el-table-column
+        <div class="students-btns">
+            <div class="students-btn">
+                <a style="cursor:pointer" @click="openDetailBtn(courseId)">{{courseTitle}}</a>
+                <el-dialog :visible.sync="detailBtn" title="Детализация" fullscreen>
+                    <div class="course-body">
+                        <div class="course-title">{{ title }}</div>
+                        <template>
+                            <el-table :data="course">
+                            <el-table-column
                                 label="Тематика курса"
                                 width="150">
                             <template slot-scope="scope">
                                 {{scope.row.theme}}
                             </template>
-                        </el-table-column>
-                        <el-table-column
-                                label="Название курса"
-                                width="150">
-                            <template slot-scope="scope">
-                                {{scope.row.name}}
-                            </template>
-                        </el-table-column>
-                        <el-table-column
-                                label="Описание курса"
-                                width="150">
-                            <template slot-scope="scope">
-                                {{scope.row.description}}
-                            </template>
-                        </el-table-column>
-                        <el-table-column
-                                label="Дата старта"
-                                width="120">
-                            <template slot-scope="scope">
-                                {{scope.row.date}}
-                            </template>
-                        </el-table-column>
-                        <el-table-column
-                                label="Ссылка на видео"
-                                width="150">
-                            <template slot-scope="scope">
-                                <a href="/">{{scope.row.link}}</a>
-                            </template>
-                        </el-table-column>
-                        <el-table-column
-                                label="Список учащихся"
-                                width="500">
-                            <template slot-scope="scope">
-                                <ul class="students-list">
-                                    <li class="students-item" v-for="(item, index) in student" :key="item.id">
-                                        <div class="student-item">{{ item.family }}</div>
-                                        <div class="student-item">{{ item.name }}</div>
-                                        <div class="student-item">{{ item.surname }}</div>
-                                        <el-button class="student-item del" icon="el-icon-close" circle size="mini" @click="deleteStudent(index)"></el-button>
-                                    </li>
-                                </ul>
-                                <add-students @add-student="addNewStudent"></add-students>
-
-                            </template>
-                        </el-table-column>
-                    </el-table>
-            </template>
+                            </el-table-column>
+                            <el-table-column
+                                    label="Название курса"
+                                    width="150">
+                                <template slot-scope="scope">
+                                    {{scope.row.name}}
+                                </template>
+                            </el-table-column>
+                            <el-table-column
+                                    label="Описание курса"
+                                    width="150">
+                                <template slot-scope="scope">
+                                    {{scope.row.description}}
+                                </template>
+                            </el-table-column>
+                            <el-table-column
+                                    label="Дата старта"
+                                    width="120">
+                                <template slot-scope="scope">
+                                    {{scope.row.date}}
+                                </template>
+                            </el-table-column>
+                            <el-table-column
+                                    label="Ссылка на видео"
+                                    width="150">
+                                <template slot-scope="scope">
+                                    <a href="/">{{scope.row.link}}</a>
+                                </template>
+                            </el-table-column>
+                            <el-table-column
+                                    label="Список учащихся"
+                                    width="500">
+                                <template slot-scope="scope">
+                                    <ul class="students-list">
+                                        <li class="students-item" v-for="(item, index) in student" :key="item.id" v-if="item.courseId == courseId">
+                                            <div class="student-item">{{ item.family }}</div>
+                                            <div class="student-item">{{ item.name }}</div>
+                                            <div class="student-item">{{ item.surname }}</div>
+                                            <el-button class="student-item del" icon="el-icon-close" circle size="mini" @click="deleteStudent(index)"></el-button>
+                                        </li>
+                                    </ul>
+                                    <add-students @add-student="addNewStudent"></add-students>
+                                </template>
+                            </el-table-column>
+                            </el-table>
+                        </template>
+                    </div>
+                </el-dialog>
             </div>
+        </div>
         `,
         data() {
             return {
                 addBtn: false,
+                detailBtn: false,
+
                 title: 'Карточка обучающего курса',
 
-                course: [{
-                    id: '1',
-                    theme: 'Тематика курса 1',
-                    name: 'Название курса 1',
-                    description: 'Описание курса 1',
-                    date: '10.12.2019',
-                    link: 'http://test.ru/'
-                }],
+                course: [
+                    {
+                        id: '1',
+                        theme: 'Тематика курса 1',
+                        name: 'Название курса 1',
+                        description: 'Описание курса 1',
+                        date: '10.12.2019',
+                        link: 'http://test.ru/'
+                    },
+                    {
+                        id: '2',
+                        theme: 'Тематика курса 2',
+                        name: 'Название курса 2',
+                        description: 'Описание курса 2',
+                        date: '09.12.2019',
+                        link: 'http://test.ru/'
+                    }
+                ],
 
                 student: [
                     {id: 1, family: "Иванов", name: "Иван", surname: "Иванович"},
@@ -117,16 +135,26 @@
                     localStorage.removeItem('student');
                 }
             }
+            if (localStorage.getItem('course')) {
+                try {
+                    this.course = JSON.parse(localStorage.getItem('course'));
+                } catch (e) {
+                    localStorage.removeItem('course');
+                }
+            }
         },
 
         methods: {
+            openDetailBtn(id) {
+                this.detailBtn = true
+                this.course = this.course.filter(c => c.id == id)
+            },
             saveStudents() {
-                //console.log(this.student);
+                console.log(this.courseId);
                 const parsed = JSON.stringify(this.student);
 
                 localStorage.setItem('student', parsed);
                 this.addBtn = false;
-                this.resetFields();
             },
 
             deleteStudent(itemIndex) {
@@ -140,18 +168,14 @@
                     this.$message('Одно из полей не заполнено');
                 } else {
                     this.student.push({
-                        id: Math.max(...this.student.map(user => user.id)) + 1,
+                        courseId: this.courseId,
+                        id: this.student.length + 1,
                         name: newStudentName,
                         family: newStudentFamily,
                         surname: newStudentSurname
                     });
                     this.saveStudents();
                 }
-            },
-            resetFields() {
-                this.newStudentFamily = '';
-                this.newStudentName = '';
-                this.newStudentSurname = '';
             },
         },
     });
@@ -193,21 +217,100 @@
             }
         },
 
-        mounted() {
-        },
-
         methods: {
             addStudent() {
                 //console.log(this.newStudentName);
                 this.$emit('add-student', this.newStudentName, this.newStudentFamily, this.newStudentSurname);
                 this.addBtn = false;
+                this.newStudentName = null;
+                this.newStudentFamily = null;
+                this.newStudentSurname = null;
             },
         },
     });
 
+    Vue.component('course-table', {
+        template: `
+            <div class="course-body">
+            <el-button type="primary" size="mini" @click="addCourseToStorage()">Course</el-button>
+
+                <div class="course-title">{{ title }}</div>
+                <template>
+                    <el-table
+                            :data="course"
+                            style="width: 100%">
+                        <el-table-column
+                                label="Дата старта курса"
+                                width="250">
+                            <template slot-scope="scope">
+                                {{scope.row.date}}
+                            </template>
+                        </el-table-column>
+                        <el-table-column
+                                label="Название курса"
+                                width="250">
+                            <template slot-scope="scope">
+                                <course-detail :course-title="scope.row.name" :course-id="scope.row.id"></course-detail>
+                            </template>
+                        </el-table-column>
+                        <el-table-column
+                                label="Количество учащихся на курсе"
+                                width="250">
+                            <template slot-scope="scope">
+
+                            </template>
+                        </el-table-column>
+                    </el-table>
+
+            </template>
+            </div>
+        `,
+        data() {
+            return {
+                title: 'Список курсов',
+
+                course: [
+                    {
+                        id: '1',
+                        theme: 'Тематика курса 1',
+                        name: 'Название курса 1',
+                        description: 'Описание курса 1',
+                        date: '10.12.2019',
+                        link: 'http://test.ru/'
+                    },
+                    {
+                        id: '2',
+                        theme: 'Тематика курса 2',
+                        name: 'Название курса 2',
+                        description: 'Описание курса 2',
+                        date: '09.12.2019',
+                        link: 'http://test.ru/'
+                    }
+                ],
+
+            }
+        },
+        mounted() {
+            if (localStorage.getItem('course')) {
+                try {
+                    this.course = JSON.parse(localStorage.getItem('course'));
+                } catch (e) {
+                    localStorage.removeItem('course');
+                }
+            }
+        },
+        methods: {
+            addCourseToStorage() {
+                const parsed = JSON.stringify(this.course);
+
+                localStorage.setItem('course', parsed);
+            }
+        }
+    });
 
     var app = new Vue({
         el: '#app'
     });
 </script>
+
 </html>

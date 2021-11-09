@@ -22,7 +22,8 @@ body {
 }
 
 .course-body {
-    margin: 20px 0 0 0;
+    width: 100%;
+    padding: 10px;
 }
 
 .students-item {
@@ -50,7 +51,7 @@ body {
 }
 
 .students-btns {
-    margin: 10px 0 0 0;
+
 }
 
 .students-btn {
